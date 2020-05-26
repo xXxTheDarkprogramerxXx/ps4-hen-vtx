@@ -244,6 +244,49 @@ PAYLOAD_CODE int shellcore_fpkg_patch(void)
         goto error;
     }
 
+	
+	// enable savedata mounting
+	ret = proc_write_mem(ssc, (void *)(text_seg_base + sce_sdmemory_patch), 1, "\x00", &n);//'sce_sdmemory' patch
+	if (ret)
+	{
+		goto error;
+	}
+	ret = proc_write_mem(ssc, (void *)(text_seg_base + verify_keystone_patch), 4, "\x48\x31\xC0\xC3", &n);//0x48, 0x31, 0xC0, 0xC3
+	if (ret)
+	{
+		goto error;
+	}
+
+	ret = proc_write_mem(ssc, (void *)(text_seg_base + save_mount_permision), 3, "\x31\xC0\xC3", &n);//0x48, 0x31, 0xC0, 0xC3
+	if (ret)
+	{
+		goto error;
+	}
+	ret = proc_write_mem(ssc, (void *)(text_seg_base + save_mount_patch), 2, "\x90\x90", &n);//^
+	if (ret)
+	{
+		goto error;
+	}
+	ret = proc_write_mem(ssc, (void *)(text_seg_base + save_mount_something_patch), 6, "\x90\x90\x90\x90\x90\x90", &n);//something something patch
+	if (ret)
+	{
+		goto error;
+	}
+	ret = proc_write_mem(ssc, (void *)(text_seg_base + save_mount_patch_unk), 6, "\x90\x90\x90\x90\x90\x90", &n);//something something patch
+	if (ret)
+	{
+		goto error;
+	}
+	 ret = proc_write_mem(ssc, (void *)(text_seg_base + save_mount_never_jump), 2, "\x90\x90", &n);//nevah jump
+	 if (ret)
+	 {
+		 goto error;
+	 }
+	 ret = proc_write_mem(ssc, (void *)(text_seg_base + save_mount_always_jump), 2, "\x90\xE9", &n);//always jump
+	 if (ret)
+	 {
+		 goto error;
+	 }
 error:
 	if (entries)
 		dealloc(entries);
